@@ -9,5 +9,10 @@ def test():
 
 
 @app.route('/exchanges', methods=['GET'])
-def scraped_data():
+def get_scraped_webpage():
     return jsonify(webscrape.scrape())
+
+
+@app.route('/exchanges/<pid>', methods=['GET'])
+def get_program_data(pid):
+    return pid

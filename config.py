@@ -1,7 +1,8 @@
 # main page classes
 
 # TODO: fix up if multiple pages
-BASE_URL = "https://uwaterloo-horizons.symplicity.com/index.php?_so_list_aat5ad5a89179cb63f89c2de5a1bb7ce758=250"
+BASE_URL = "https://uwaterloo-horizons.symplicity.com/index.php?s=programs"
+SEARCH_URL = "https://uwaterloo-horizons.symplicity.com/index.php?_so_list_aat5ad5a89179cb63f89c2de5a1bb7ce758=250"
 
 PROGRAM_INFO = "cspList_main lst-cl-p_name"
 HOST_INST = "cspList_main lst-cl-inst_name"

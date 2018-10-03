@@ -4,7 +4,7 @@ from config import *
 
 
 def scrape():
-    data = [
+    exchange_data = [
         {
             'data': 'hello',
             'program': 'Software',
@@ -17,4 +17,12 @@ def scrape():
         },
     ]
 
-    return data
+    req = requests.get(SEARCH_URL)
+    soup = BeautifulSoup(req.text, "html.parser")
+    exchange_data = soup.find_all('div', class_="blurb")
+
+    return exchange_data
+
+
+if __name__ == "__main__":
+    print(scrape())
