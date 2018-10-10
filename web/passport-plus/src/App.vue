@@ -18,12 +18,14 @@
   body {
     background-image: url("../static/img/notebook.png");
     font-family: 'Lato', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
   }
   h1 {
     font-family: 'Architects Daughter', cursive;
     font-size: 60px;
-    margin: 30px 15px;
+  }
+  .row {
+    margin: 30px 0;
   }
   #plus {
     color: #1d7b35;

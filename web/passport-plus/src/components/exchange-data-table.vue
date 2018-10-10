@@ -2,13 +2,18 @@
   <div class="app-container">
     <div class="card">
       <div class="card-header">
-        Featured
+        Search Programs
       </div>
       <div class="card-body">
-        This is some text within a card body.
+        <form class="form-search">
+          <div class="input-append">
+            <input type="text" v-model="search" class="span2 search-query">
+            <button type="submit" class="btn btn-search" @click="updateSearch(search)">Search</button>
+          </div>
+        </form>
       </div>
     </div>
-    <table class="table table-light table-sm table-striped table-responsive">
+    <table class="table table-light table-striped table-bordered table-responsive">
       <thead>
       <tr>
         <th v-for="table_header in table_headers">{{table_header}}</th>
@@ -80,5 +85,11 @@
   }
   .card {
     margin-bottom: 20px;
+  }
+  .btn {
+    height: 26px;
+  }
+  .card-header {
+    /*TODO: FIX FONTS AND HEIGHT*/
   }
 </style>
