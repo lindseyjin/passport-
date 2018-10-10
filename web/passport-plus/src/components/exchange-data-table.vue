@@ -3,27 +3,15 @@
     <table class="table table-dark">
       <thead>
       <tr>
-        <th v-for="header in table_headers">{{header}}</th>
+        <th v-for="table_header in table_headers">{{table_header}}</th>
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>@twitter</td>
+      <tr v-for="item in exchange_data">
+        <td>{{item['program']}}</td>
+        <td>{{item['host']}}</td>
+        <td>{{returnString(item['languages'])}}</td>
+        <td>{{returnString(item['terms'])}}</td>
       </tr>
       </tbody>
     </table>
@@ -37,12 +25,12 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      table_headers: {
-        'Program': 'program',
-        'Host Institution': 'host',
-        'Languages': 'languages',
-        'Terms': 'terms'
-      },
+      table_headers: [
+        'Program',
+        'Host Institution',
+        'Languages',
+        'Terms'
+      ],
       exchange_data: []
     }
   },
@@ -58,6 +46,17 @@ export default {
         // console log error message
         console.log(error)
       })
+  },
+  methods: {
+    returnString (list) {
+      if($.type(list) === "string") return list
+      let result = ""
+      for (var i = 0; i < list.length - 1; i++) {
+        result += list[i] + ", "
+      }
+      result += list[list.length - 1]
+      return result
+    }
   }
 }
 </script>
