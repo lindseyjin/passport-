@@ -8,7 +8,7 @@ def test():
     return "testing testing, hello world"
 
 
-@app.route('/exchanges', methods=['GET'])
+@app.route('/exchanges', methods=['GET', 'POST'])
 def get_scraped_webpage():
     return jsonify(web_scrape.scrape())
 
