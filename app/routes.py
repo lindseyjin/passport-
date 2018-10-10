@@ -1,6 +1,6 @@
 from flask import jsonify
 from app import app
-import webscrape
+import web_scrape
 
 
 @app.route('/')
@@ -10,7 +10,7 @@ def test():
 
 @app.route('/exchanges', methods=['GET'])
 def get_scraped_webpage():
-    return jsonify(webscrape.scrape())
+    return jsonify(web_scrape.scrape())
 
 
 @app.route('/exchanges/<pid>', methods=['GET'])
