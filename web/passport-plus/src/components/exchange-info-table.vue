@@ -7,9 +7,9 @@
     </thead>
     <tbody>
     <tr v-for="item in pageData">
-      <td>{{item['location']}}</td>
       <td><a :href="item['link']" target="_blank">{{item['program']}}</a></td>
       <td>{{item['host']}}</td>
+      <td>{{item['location']}}</td>
       <td>{{item['languages']}}</td>
       <td>{{returnString(item['terms'])}}</td>
     </tr>
@@ -24,9 +24,9 @@
     data () {
       return {
         tableHeaders: [
-          'Location',
           'Program',
           'Host Institution',
+          'Location',
           'Languages',
           'Terms'
         ],
