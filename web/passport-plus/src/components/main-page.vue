@@ -15,25 +15,21 @@
         </div>
         <div v-if="filters" class="card mb-3">
           <div class="card-body inline">
-            <!--TODO: MOVE TO SEPARATE COMPONENT-->
-            <div class="form-group">
-              <label for=language-select>Languages: </label>
-              <select v-model="selectedLang" id="language-select">
-                <option v-for="lang in selectLangs">{{lang}}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for=term-select>Terms: </label>
-              <select v-model="selectedTerm" class="select" id="term-select">
-                <option v-for="term in selectTerms">{{term}}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for=dest-select>Destination: </label>
-              <select v-model="selectedDest" class="select" id="dest-select">
-                <option v-for="dest in selectDests">{{dest}}</option>
-              </select>
-            </div>
+            <dropdown
+              v-bind:label="labels[0]"
+              v-bind:selectOptions="selectLangs"
+              v-on:change-selection="setLang"
+            ></dropdown>
+            <dropdown
+              v-bind:label="labels[1]"
+              v-bind:selectOptions="selectTerms"
+              v-on:change-selection="setTerm"
+            ></dropdown>
+            <dropdown
+              v-bind:label="labels[2]"
+              v-bind:selectOptions="selectDests"
+              v-on:change-selection="setDest"
+            ></dropdown>
             <button type="submit" class="btn btn-info btn-sm" @click="applyFilters">Apply Filters</button>
             <button type="submit" class="btn btn-danger btn-sm" @click="clearFilters">Clear</button>
           </div>
@@ -42,31 +38,29 @@
     </div>
     <br>
     <div class="pagination-row">
-      <div class="form-group">
-        <label for=page-select><h6>Items per Page:</h6></label>
-        <select v-model="itemsPerPage" id="page-select">
-          <option>20</option>
-          <option>50</option>
-          <option>100</option>
-          <option>200</option>
-        </select>
-      </div>
+      <dropdown
+        v-bind:label="pageSelectLabel"
+        v-bind:selectOptions="pageOptions"
+        v-on:change-selection="setItemsPerPage"
+      ></dropdown>
       <h6 style="margin-right: 15px">Page {{currPage}} of {{totalPages}}</h6>
       <b-pagination class="pagination-info" size="sm" :total-rows="this.filteredTableData.length" v-model="currPage" :per-page="itemsPerPage">
       </b-pagination>
     </div>
-    <exchange-info-table v-bind:pageData="pageData"></exchange-info-table>
+    <exchange-info-table
+      v-bind:pageData="pageData"
+    ></exchange-info-table>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
-  import ShortList from './short-list'
+  import Dropdown from './dropdown'
   import ExchangeInfoTable from './exchange-info-table'
 
   export default {
     name: 'MainPage',
-    components: {ShortList, ExchangeInfoTable},
+    components: {Dropdown, ExchangeInfoTable},
     data () {
       return {
         msg: 'Welcome to Your Vue.js App',
@@ -75,62 +69,24 @@
         filters: false,
         currPage: 1,
         itemsPerPage: 20,
+        pageSelectLabel: "Items per Page: ",
+        pageOptions: [20, 50, 100, 200],
         shortList: [],
         filtering: false,
+        labels: [
+          'Languages: ',
+          'Terms: ',
+          'Destinations: '
+        ],
+        selectDestVals: [],
+        selectLangVals: [],
+        selectTermVals: [],
         selectedLang: '',
         selectedTerm: '',
         selectedDest: ''
       }
     },
-    mounted () {
-      let self = this
-      axios.get('http://127.0.0.1:5000/exchanges')
-        .then(function (response) {
-          console.log("successful get request")
-          self.exchangeData = response.data
-        })
-        .catch(function (error){
-          // console log error message
-          console.log(error)
-        })
-    },
     computed: {
-      selectTerms: function () {
-        let terms = []
-        for (let x = 0; x < this.exchangeData.length; x++) {
-          let currTerm = this.exchangeData[x]['terms']
-          if (currTerm) {
-            for (let y = 0; y < currTerm.length; y++) {
-              if (!terms.includes(currTerm[y])) {
-                terms.push(currTerm[y])
-              }
-            }
-          }
-        }
-        return terms
-      },
-      selectLangs: function () {
-        let langs = []
-        for (let x = 0; x < this.exchangeData.length; x++) {
-          if (this.exchangeData[x]['languages']) {
-            if (!langs.includes(this.exchangeData[x]['languages'])) {
-              langs.push(this.exchangeData[x]['languages'])
-            }
-          }
-        }
-        return langs
-      },
-      selectDests: function () {
-        let dests = []
-        for (let x = 0; x < this.exchangeData.length; x++) {
-          if (this.exchangeData[x]['location']) {
-            if (!dests.includes(this.exchangeData[x]['location'])) {
-              dests.push(this.exchangeData[x]['location'])
-            }
-          }
-        }
-        return dests
-      },
       totalPages: function () {
         return Math.ceil(this.filteredTableData.length/this.itemsPerPage)
       },
@@ -183,6 +139,19 @@
         return filteredData
       }
     },
+    mounted () {
+      let self = this
+      axios.get('http://127.0.0.1:5000/exchanges')
+        .then(function (response) {
+          console.log("successful get request")
+          self.exchangeData = response.data
+          self.selectDestVals = self.selectDests()
+        })
+        .catch(function (error){
+          // console log error message
+          console.log(error)
+        })
+    },
     methods: {
       toggleFiltersTab() {
         this.filters = !this.filters
@@ -193,6 +162,54 @@
       clearFilters() {
         this.filtering = false
         this.selectedLang = this.selectedTerm = this.selectedDest = ""
+      },
+      selectTerms () {
+        let terms = []
+        for (let x = 0; x < this.exchangeData.length; x++) {
+          let currTerm = this.exchangeData[x]['terms']
+          if (currTerm) {
+            for (let y = 0; y < currTerm.length; y++) {
+              if (!terms.includes(currTerm[y])) {
+                terms.push(currTerm[y])
+              }
+            }
+          }
+        }
+        return terms
+      },
+      selectLangs () {
+        let langs = []
+        for (let x = 0; x < this.exchangeData.length; x++) {
+          if (this.exchangeData[x]['languages']) {
+            if (!langs.includes(this.exchangeData[x]['languages'])) {
+              langs.push(this.exchangeData[x]['languages'])
+            }
+          }
+        }
+        return langs
+      },
+      selectDests () {
+        let dests = []
+        for (let x = 0; x < this.exchangeData.length; x++) {
+          if (this.exchangeData[x]['location']) {
+            if (!dests.includes(this.exchangeData[x]['location'])) {
+              dests.push(this.exchangeData[x]['location'])
+            }
+          }
+        }
+        return dests
+      },
+      setLang(value) {
+        this.selectedLang = value
+      },
+      setTerm(value) {
+        this.selectedTerm = value
+      },
+      setDest(value) {
+        this.selectedDest = value
+      },
+      setItemsPerPage(value) {
+        this.itemsPerPage = value
       }
     }
   }
