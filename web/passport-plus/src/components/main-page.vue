@@ -17,25 +17,34 @@
                   style="cursor: pointer;" @click="toggleFiltersTab()">Filter <i class="fas fa-caret-down"></i></span>
           </div>
         </div>
-        <div v-if="filters" class="card mb-3">
+        <div v-if="showFilters" class="card mb-3">
           <div class="card-body inline">
             <dropdown
               v-bind:label="labels[0]"
               v-bind:selectOptions="selectLangOptions"
+              v-bind:showNone="true"
+              v-bind:clearFilters="clearFilters['lang']"
+              v-on:cleared="filtersCleared('lang')"
               v-on:change-selection="setLang"
             ></dropdown>
             <dropdown
               v-bind:label="labels[1]"
               v-bind:selectOptions="selectTermOptions"
+              v-bind:showNone="true"
+              v-bind:clearFilters="clearFilters['term']"
+              v-on:cleared="filtersCleared('term')"
               v-on:change-selection="setTerm"
             ></dropdown>
             <dropdown
               v-bind:label="labels[2]"
               v-bind:selectOptions="selectDestOptions"
+              v-bind:showNone="true"
+              v-bind:clearFilters="clearFilters['dest']"
+              v-on:cleared="filtersCleared('dest')"
               v-on:change-selection="setDest"
             ></dropdown>
             <button type="submit" class="btn btn-info btn-sm" @click="applyFilters">Apply Filters</button>
-            <button type="submit" class="btn btn-danger btn-sm" @click="clearFilters">Clear</button>
+            <button type="submit" class="btn btn-danger btn-sm" @click="removeFilters">Clear</button>
           </div>
         </div>
       </div>
@@ -45,6 +54,7 @@
       <dropdown
         v-bind:label="pageSelectLabel"
         v-bind:selectOptions="pageOptions"
+        v-bind:showNone="false"
         v-on:change-selection="setItemsPerPage"
       ></dropdown>
       <h6 style="margin-right: 15px">Page {{currPage}} of {{totalPages}}</h6>
@@ -68,26 +78,36 @@
     components: {Dropdown, ExchangeInfoTable},
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App',
         exchangeData: [],
         search: "",
-        filters: false,
+        showFilters: false,
+        clearFilters: {
+          'term': false,
+          'lang': false,
+          'dest': false
+        },
+        isFiltering: false,
         currPage: 1,
         itemsPerPage: 20,
-        pageSelectLabel: "Items per Page: ",
         pageOptions: [20, 50, 100, 200],
-        filtering: false,
+        pageSelectLabel: "Items per Page: ",
         labels: [
           'Languages: ',
           'Terms: ',
           'Destinations: '
         ],
-        selectDestOptions: [],
+        // arrays of selectable filter options
         selectLangOptions: [],
+        selectDestOptions: [],
         selectTermOptions: [],
+        // currently selected options in search boxes
         selectedLang: '',
         selectedTerm: '',
-        selectedDest: ''
+        selectedDest: '',
+        // options being filtered by, not always == currently selected
+        filterByLang: '',
+        filterByTerm: '',
+        filterByDest: ''
       }
     },
     computed: {
@@ -107,9 +127,9 @@
       addFiltersData: function () {
         let self = this
         return this.exchangeData.filter(function (item) {
-          if (self.selectedLang === "" || item['languages'].indexOf(self.selectedLang) !== -1) {
-            if (self.selectedDest === "" || item['location'] === self.selectedDest) {
-              if (self.selectedTerm === "" || item['terms'].includes(self.selectedTerm)) {
+          if (self.filterByLang === "" || item['languages'].indexOf(self.filterByLang) !== -1) {
+            if (self.filterByDest === "" || item['location'] === self.filterByDest) {
+              if (self.filterByTerm === "" || item['terms'].includes(self.filterByTerm)) {
                 return item
               }
             }
@@ -120,7 +140,7 @@
         let filteredData = this.exchangeData
         let self = this
 
-        if (this.filtering === true) {
+        if (this.isFiltering === true) {
           filteredData = this.addFiltersData
         }
 
@@ -161,14 +181,22 @@
     },
     methods: {
       toggleFiltersTab() {
-        this.filters = !this.filters
+        this.showFilters = !this.showFilters
       },
       applyFilters() {
-        this.filtering = true
+        this.isFiltering = true
+        this.filterByLang = this.selectedLang
+        this.filterByTerm = this.selectedTerm
+        this.filterByDest = this.selectedDest
       },
-      clearFilters() {
-        this.filtering = false
-        this.selectedLang = this.selectedTerm = this.selectedDest = ""
+      removeFilters() {
+        this.isFiltering = false
+        this.clearFilters['term'] = true
+        this.clearFilters['lang'] = true
+        this.clearFilters['dest'] = true
+      },
+      filtersCleared(header) {
+        this.clearFilters[header] = false
       },
       createListSelectOptions(header) {
         let options = []
@@ -191,7 +219,7 @@
             }
           }
         }
-        return options
+        return options.sort()
       },
       setLang(value) {
         this.selectedLang = value
