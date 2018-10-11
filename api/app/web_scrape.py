@@ -12,11 +12,11 @@ def scrape():
         session.headers = {'User-Agent': USER_AGENT}
 
         # initial get request
-        session.get(BASE_URL)
+        session.get(BASE_URL + "?s=programs")
 
         # get all items
         # todo: fix to use next page instead? in case items exceed 250 or parse url using bs
-        req = session.get("https://uwaterloo-horizons.symplicity.com/index.php?_so_list_aat5ad5a89179cb63f89c2de5a1bb7ce758=250")
+        req = session.get(BASE_URL + "?_so_list_aat5ad5a89179cb63f89c2de5a1bb7ce758=250")
         soup = BeautifulSoup(req.text, "html.parser")
 
         #todo: add link to horizon page
@@ -34,9 +34,10 @@ def scrape():
         terms.append(soup.find('td', class_=TERMS_LAST))
 
         for x in range(0, len(program_info)):
-            exchange_data.append({'program': '', 'host': '', 'location': '', 'languages': '', 'terms': []})
+            exchange_data.append({'program': '', 'link': '', 'host': '', 'location': '', 'languages': '', 'terms': []})
             if program_info[x].div.a:
                 exchange_data[x]['program'] = program_info[x].div.a.text
+                exchange_data[x]['link'] = BASE_URL + program_info[x].div.a['href']
             if program_info[x].div.i:
                 exchange_data[x]['location'] = program_info[x].div.i.text
             if host_info[x].div:

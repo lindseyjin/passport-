@@ -5,7 +5,7 @@
         Search Programs
       </div>
       <div class="card-body">
-        <div class="input-group mb-3">
+        <div class="input-group input-group-sm mb-3">
           <input type="text" v-model="search" class="form-control" placeholder="Search keywords...">
           <div class="input-group-append">
             <span class="input-group-text" data-toggle="tooltip" title="Show Filters"
@@ -37,6 +37,7 @@
       </thead>
       <tbody>
       <tr v-for="item in filteredTableData">
+        <td>{{item['location']}}</td>
         <td>{{item['program']}}</td>
         <td>{{item['host']}}</td>
         <td>{{returnString(item['languages'])}}</td>
@@ -60,6 +61,7 @@
       return {
         msg: 'Welcome to Your Vue.js App',
         tableHeaders: [
+          'Location',
           'Program',
           'Host Institution',
           'Languages',
@@ -156,6 +158,6 @@
   .card-header {
     /*TODO: FIX FONTS AND HEIGHT*/
     font-size: 16px;
-    padding: auto 0;
+    padding: 5px 10px;
   }
 </style>
