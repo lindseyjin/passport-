@@ -12,7 +12,7 @@
 
 <script>
   export default {
-    name: "short-list.vue"
+    name: "ShortList"
   }
 </script>
 

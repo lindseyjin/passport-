@@ -4,17 +4,15 @@
       <h1>Passport</h1>
       <h1 id="plus">+</h1>
     </div>
-  <!--<short-list></short-list>-->
   <exchange-data-table></exchange-data-table>
   </div>
 </template>
 
 <script>
   import ExchangeDataTable from './components/exchange-data-table'
-  import ShortList from './components/short-list'
   export default {
     name: 'App',
-    components: {ExchangeDataTable, ShortList}
+    components: {ExchangeDataTable}
   }
 </script>
 

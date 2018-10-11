@@ -10,17 +10,39 @@
           <div class="input-group-append">
             <span class="input-group-text" data-toggle="tooltip" title="Show Filters"
                   style="cursor: pointer;" @click="applyFilters()"><i class="fas fa-caret-down"></i></span>
-            <button v-if="filters === false" type="submit" class="btn btn-info"><i class="fa fa-search" aria-hidden="true"></i></button>
+            <button v-if="filters === false" type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></button>
           </div>
         </div>
         <div v-if="filters" class="card mb-3">
           <div class="card-body inline">
             <div class="form-group">
-              <label for=language-select>Languages</label>
-              <select class="selectpicker" id="language-select">
+              <label for=language-select>Languages: </label>
+              <select class="select" id="language-select">
                 <option>Mustard</option>
                 <option>Ketchup</option>
                 <option>Relish</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for=term-select>Terms: </label>
+              <select class="select" id="term-select">
+                <option>Fall 2019</option>
+                <option>Summer 2019</option>
+                <option>Fall 2019 and Spring 2020</option>
+                <option>Fall 2019 and Winter 2020</option>
+                <option>Spring 2019</option>
+                <option>Winter 2020</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for=dest-select>Destination: </label>
+              <select class="select" id="dest-select">
+                <option>Fall 2019</option>
+                <option>Summer 2019</option>
+                <option>Fall 2019 and Spring 2020</option>
+                <option>Fall 2019 and Winter 2020</option>
+                <option>Spring 2019</option>
+                <option>Winter 2020</option>
               </select>
             </div>
           </div>
@@ -28,6 +50,20 @@
       </div>
     </div>
     <br>
+    <div class="pagination-row">
+      <div class="form-group">
+        <label for=page-select><h6>Items per Page:</h6></label>
+        <select v-model="itemsPerPage" id="page-select">
+          <option>20</option>
+          <option>50</option>
+          <option>100</option>
+          <option>200</option>
+        </select>
+      </div>
+      <h6 style="margin-right: 15px">Page {{currPage}} of {{totalPages}}</h6>
+      <b-pagination class="pagination-info" size="sm" :total-rows="this.filteredTableData.length" v-model="currPage" :per-page="itemsPerPage">
+      </b-pagination>
+    </div>
     <table class="table table-light table-striped">
       <thead>
       <tr>
@@ -36,7 +72,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="item in filteredTableData">
+      <tr v-for="item in pageData">
         <td>{{item['location']}}</td>
         <td><a :href="item['link']" target="_blank">{{item['program']}}</a></td>
         <td>{{item['host']}}</td>
@@ -54,9 +90,11 @@
 
 <script>
   import axios from 'axios'
+  import ShortList from './short-list'
 
   export default {
     name: 'ExchangeDataTable',
+    components: {ShortList},
     data () {
       return {
         msg: 'Welcome to Your Vue.js App',
@@ -70,9 +108,8 @@
         exchangeData: [],
         search: "",
         filters: false,
-        terms: {
-
-        },
+        currPage: 1,
+        itemsPerPage: 20,
         shortList: []
       }
     },
@@ -90,6 +127,28 @@
         })
     },
     computed: {
+      select_terms: function () {
+
+      },
+      select_languages: function () {
+
+      },
+      select_destination: function () {
+
+      },
+      totalPages: function () {
+        return Math.ceil(this.filteredTableData.length/this.itemsPerPage)
+      },
+      pageData: function () {
+        let start_index = this.itemsPerPage*(this.currPage - 1)
+        let end_index = start_index + this.itemsPerPage
+        if (end_index < this.filteredTableData.length) {
+          return this.filteredTableData.slice(start_index, end_index)
+        }
+        else {
+          return this.filteredTableData.slice(start_index)
+        }
+      },
       filteredTableData: function () {
         if (!this.search) return this.exchangeData
         let self = this
@@ -159,5 +218,21 @@
     /*TODO: FIX FONTS AND HEIGHT*/
     font-size: 16px;
     padding: 5px 10px;
+  }
+  .pagination-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: -10px;
+  }
+  h6 {
+    margin-top: 5px;
+    font-size: 14px;
+  }
+  .form-group {
+    margin-right: 15px;
+  }
+  #page-select {
+    height: 25px;
   }
 </style>
