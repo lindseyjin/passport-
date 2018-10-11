@@ -14,20 +14,21 @@
           </div>
         </div>
         <div v-if="filters" class="card mb-3">
-            <div class="card-body">
-              testomg
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-                <div role="separator" class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a>
-              </div>
+          <div class="card-body inline">
+            <div class="form-group">
+              <label for=language-select>Languages</label>
+              <select class="selectpicker" id="language-select">
+                <option>Mustard</option>
+                <option>Ketchup</option>
+                <option>Relish</option>
+              </select>
             </div>
           </div>
+        </div>
       </div>
     </div>
-    <table class="table table-light table-striped table-bordered table-responsive">
+    <br>
+    <table class="table table-light table-striped">
       <thead>
       <tr>
         <th v-for="tableHeader in tableHeaders">{{tableHeader}}</th>
@@ -40,7 +41,10 @@
         <td>{{item['host']}}</td>
         <td>{{returnString(item['languages'])}}</td>
         <td>{{returnString(item['terms'])}}</td>
-        <td><i class="fa fa-plus" aria-hidden="true"></i></td>
+        <td v-if="inList(item) === false" @click="addToList(item)" v-bind:style="{ padding: '15px', cursor: 'pointer'}" class="text-success">
+          <i class="fas fa-lg fa-plus-circle"></i></td>
+        <td v-else @click="removeFromList(item)" v-bind:style="{ padding: '15px', cursor: 'pointer'}" class="text-danger">
+          <i class="fas fa-lg fa-minus-circle"></i></td>
       </tr>
       </tbody>
     </table>
@@ -63,7 +67,11 @@
         ],
         exchangeData: [],
         search: "",
-        filters: false
+        filters: false,
+        terms: {
+
+        },
+        shortList: []
       }
     },
     mounted () {
@@ -93,7 +101,7 @@
             else if (Array.isArray(item[key])){
               for (let i = 0; i < item[key].length; i++) {
                 if (item[key][i].toLowerCase().indexOf(self.search.toLowerCase().trim()) !== -1)
-                return item
+                  return item
               }
 
             }
@@ -114,6 +122,24 @@
       },
       applyFilters() {
         this.filters = !this.filters
+      },
+      inList(program) {
+        for (let i = 0; i < this.shortList.length; i++) {
+          if (this.shortList[i] === program) {
+            return true
+          }
+        }
+        return false
+      },
+      addToList(program) {
+        this.shortList.push(program)
+      },
+      removeFromList(program) {
+        for (let i = 0; i < this.shortList.length; i++) {
+          if (this.shortList[i] === program) {
+            this.shortList.splice(i, 1)
+          }
+        }
       }
     }
   }
@@ -129,5 +155,7 @@
   }
   .card-header {
     /*TODO: FIX FONTS AND HEIGHT*/
+    font-size: 16px;
+    padding: auto 0;
   }
 </style>
