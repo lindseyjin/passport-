@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ExchangeDataTable from '@/components/exchange-data-table'
+import MainPage from '@/components/main-page'
 
 Vue.use(Router)
 
@@ -8,8 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'ExchangeDataTable',
-      component: ExchangeDataTable
+      name: 'MainPage',
+      component: MainPage
     }
   ]
 })

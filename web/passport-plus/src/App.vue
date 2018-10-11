@@ -4,15 +4,15 @@
       <h1>Passport</h1>
       <h1 id="plus">+</h1>
     </div>
-  <exchange-data-table></exchange-data-table>
+  <main-page></main-page>
   </div>
 </template>
 
 <script>
-  import ExchangeDataTable from './components/exchange-data-table'
+  import MainPage from './components/main-page'
   export default {
     name: 'App',
-    components: {ExchangeDataTable}
+    components: {MainPage}
   }
 </script>
 
