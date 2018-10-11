@@ -3,7 +3,7 @@ import requests
 from config import *
 
 
-def scrape():
+def scrape_exchange_data():
     exchange_data = [
     ]
 
@@ -15,11 +15,9 @@ def scrape():
         session.get(BASE_URL + "?s=programs")
 
         # get all items
-        # todo: fix to use next page instead? in case items exceed 250 or parse url using bs
         req = session.get(BASE_URL + "?_so_list_aat5ad5a89179cb63f89c2de5a1bb7ce758=250")
         soup = BeautifulSoup(req.text, "html.parser")
 
-        #todo: add link to horizon page
         # get relevant containers
         program_info = soup.find_all('td', class_=PROGRAM_INFO)
         host_info = soup.find_all('td', class_=HOST_INST)

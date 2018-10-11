@@ -38,7 +38,7 @@
       <tbody>
       <tr v-for="item in filteredTableData">
         <td>{{item['location']}}</td>
-        <td>{{item['program']}}</td>
+        <td><a :href="item['link']" target="_blank">{{item['program']}}</a></td>
         <td>{{item['host']}}</td>
         <td>{{returnString(item['languages'])}}</td>
         <td>{{returnString(item['terms'])}}</td>

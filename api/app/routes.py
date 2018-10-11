@@ -10,7 +10,7 @@ def test():
 
 @app.route('/exchanges', methods=['GET', 'POST'])
 def get_scraped_webpage():
-    return jsonify(web_scrape.scrape())
+    return jsonify(web_scrape.scrape_exchange_data())
 
 
 @app.route('/exchanges/<pid>', methods=['GET'])
