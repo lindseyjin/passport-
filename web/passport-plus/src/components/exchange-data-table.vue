@@ -18,31 +18,19 @@
             <div class="form-group">
               <label for=language-select>Languages: </label>
               <select class="select" id="language-select">
-                <option>Mustard</option>
-                <option>Ketchup</option>
-                <option>Relish</option>
+                <option v-for="lang in selectLangs">{{lang}}</option>
               </select>
             </div>
             <div class="form-group">
               <label for=term-select>Terms: </label>
               <select class="select" id="term-select">
-                <option>Fall 2019</option>
-                <option>Summer 2019</option>
-                <option>Fall 2019 and Spring 2020</option>
-                <option>Fall 2019 and Winter 2020</option>
-                <option>Spring 2019</option>
-                <option>Winter 2020</option>
+                <option v-for="term in selectTerms">{{term}}</option>
               </select>
             </div>
             <div class="form-group">
               <label for=dest-select>Destination: </label>
               <select class="select" id="dest-select">
-                <option>Fall 2019</option>
-                <option>Summer 2019</option>
-                <option>Fall 2019 and Spring 2020</option>
-                <option>Fall 2019 and Winter 2020</option>
-                <option>Spring 2019</option>
-                <option>Winter 2020</option>
+                <option v-for="dest in selectDests">{{dest}}</option>
               </select>
             </div>
           </div>
@@ -76,7 +64,7 @@
         <td>{{item['location']}}</td>
         <td><a :href="item['link']" target="_blank">{{item['program']}}</a></td>
         <td>{{item['host']}}</td>
-        <td>{{returnString(item['languages'])}}</td>
+        <td>{{item['languages']}}</td>
         <td>{{returnString(item['terms'])}}</td>
         <td v-if="inList(item) === false" @click="addToList(item)" v-bind:style="{ padding: '15px', cursor: 'pointer'}" class="text-success">
           <i class="fas fa-lg fa-plus-circle"></i></td>
@@ -127,14 +115,42 @@
         })
     },
     computed: {
-      select_terms: function () {
+      selectTerms: function () {
+        let terms = []
+        for (let x = 0; x < this.exchangeData.length; x++) {
+          let currTerm = this.exchangeData[x]['terms']
+          if (currTerm) {
+            for (let y = 0; y < currTerm.length; y++) {
+              if (!terms.includes(currTerm[y])) {
+                terms.push(currTerm[y])
+              }
+            }
+          }
+        }
+        return terms
+      },
+      selectLangs: function () {
+        let langs = []
+        for (let x = 0; x < this.exchangeData.length; x++) {
+          if (this.exchangeData[x]['languages']) {
+            if (!langs.includes(this.exchangeData[x]['languages'])) {
+              langs.push(this.exchangeData[x]['languages'])
+            }
+          }
+        }
+        return langs
 
       },
-      select_languages: function () {
-
-      },
-      select_destination: function () {
-
+      selectDests: function () {
+        let dests = []
+        for (let x = 0; x < this.exchangeData.length; x++) {
+          if (this.exchangeData[x]['location']) {
+            if (!dests.includes(this.exchangeData[x]['location'])) {
+              dests.push(this.exchangeData[x]['location'])
+            }
+          }
+        }
+        return dests
       },
       totalPages: function () {
         return Math.ceil(this.filteredTableData.length/this.itemsPerPage)
@@ -172,10 +188,9 @@
     },
     methods: {
       returnString (list) {
-        if(typeof list === 'string') return list
         let result = ""
         if (list === undefined || list.length === 0) return result
-        for (var i = 0; i < list.length - 1; i++) {
+        for (let i = 0; i < list.length - 1; i++) {
           result += list[i] + ", "
         }
         result += list[list.length - 1]
