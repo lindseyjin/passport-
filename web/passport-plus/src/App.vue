@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="app-container">
     <div class="row">
       <h1>Passport</h1>
       <h1 id="plus">+</h1>
@@ -25,6 +25,9 @@
   h1 {
     font-family: 'Architects Daughter', cursive;
     font-size: 65px;
+  }
+  .app-container {
+    margin: 0 10%;
   }
   .row {
     margin: 30px 0 20px;

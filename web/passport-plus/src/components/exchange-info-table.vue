@@ -11,7 +11,7 @@
       <td>{{item['host']}}</td>
       <td>{{item['location']}}</td>
       <td>{{item['languages']}}</td>
-      <td>{{returnString(item['terms'])}}</td>
+      <td style="width: 180px"><span v-for="term in item['terms']">{{term}}<br/></span></td>
     </tr>
     </tbody>
   </table>
@@ -30,17 +30,6 @@
           'Languages',
           'Terms'
         ],
-      }
-    },
-    methods: {
-      returnString (list) {
-        let result = ""
-        if (list === undefined || list.length === 0) return result
-        for (let i = 0; i < list.length - 1; i++) {
-          result += list[i] + ", "
-        }
-        result += list[list.length - 1]
-        return result
       }
     }
   }

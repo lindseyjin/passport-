@@ -194,6 +194,9 @@
         this.clearFilters['term'] = true
         this.clearFilters['lang'] = true
         this.clearFilters['dest'] = true
+        this.filterByLang = ""
+        this.filterByTerm = ""
+        this.filterByDest = ""
       },
       filtersCleared(header) {
         this.clearFilters[header] = false
