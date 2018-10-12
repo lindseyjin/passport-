@@ -86,7 +86,6 @@
           'lang': false,
           'dest': false
         },
-        isFiltering: false,
         currPage: 1,
         itemsPerPage: 20,
         pageOptions: [20, 50, 100, 200],
@@ -98,12 +97,14 @@
         ],
         // arrays of selectable filter options
         selectLangOptions: [],
-        selectDestOptions: [],
         selectTermOptions: [],
+        selectDestOptions: [],
         // currently selected options in search boxes
-        selectedLang: '',
-        selectedTerm: '',
-        selectedDest: '',
+        currSelected: {
+          'lang': '',
+          'term': '',
+          'dest': ''
+        },
         // options being filtered by, not always == currently selected
         filterByLang: '',
         filterByTerm: '',
@@ -140,9 +141,7 @@
         let filteredData = this.exchangeData
         let self = this
 
-        if (this.isFiltering === true) {
-          filteredData = this.addFiltersData
-        }
+        filteredData = this.addFiltersData
 
         // filter by search
         if (this.search !== "") {
@@ -184,13 +183,11 @@
         this.showFilters = !this.showFilters
       },
       applyFilters() {
-        this.isFiltering = true
-        this.filterByLang = this.selectedLang
-        this.filterByTerm = this.selectedTerm
-        this.filterByDest = this.selectedDest
+        this.filterByLang = this.currSelected['lang']
+        this.filterByTerm = this.currSelected['term']
+        this.filterByDest = this.currSelected['dest']
       },
       removeFilters() {
-        this.isFiltering = false
         this.clearFilters['term'] = true
         this.clearFilters['lang'] = true
         this.clearFilters['dest'] = true
@@ -200,6 +197,7 @@
       },
       filtersCleared(header) {
         this.clearFilters[header] = false
+        this.currSelected[header] = ""
       },
       createListSelectOptions(header) {
         let options = []
@@ -213,8 +211,7 @@
                 }
               }
             }
-          }
-          else {
+          } else {
             if (this.exchangeData[x][header]) {
               if (!options.includes(this.exchangeData[x][header])) {
                 options.push(this.exchangeData[x][header])
@@ -225,13 +222,13 @@
         return options.sort()
       },
       setLang(value) {
-        this.selectedLang = value
+        this.currSelected['lang'] = value
       },
       setTerm(value) {
-        this.selectedTerm = value
+        this.currSelected['term'] = value
       },
       setDest(value) {
-        this.selectedDest = value
+        this.currSelected['dest'] = value
       },
       setItemsPerPage(value) {
         this.itemsPerPage = parseInt(value)
