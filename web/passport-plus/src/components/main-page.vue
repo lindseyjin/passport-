@@ -181,6 +181,7 @@
     methods: {
       toggleFiltersTab() {
         this.showFilters = !this.showFilters
+        this.removeFilters()
       },
       applyFilters() {
         this.filterByLang = this.currSelected['lang']
